@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Where;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -67,6 +68,11 @@ public class Artist {
     // One Artist can have many Artworks
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Artwork> artworks;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "related_entity_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @Where(clause = "related_to_entity_type = 'ARTIST'") // Ensures only media related to artists are fetched
+    private List<PremiumMedia> premiumMedia;
 
     // One Artist can have many PremiumMedia items related to them
     // We'll define a more specific relationship when creating the PremiumMedia entity,
